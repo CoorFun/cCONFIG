@@ -42,19 +42,21 @@ static cConfig *config_list = NULL;
  * @returns: 0\Not valid 1\valid
  *
  */
-static int cConfig_Parse_Line(char *line, char *key, char *value) {
-    char *p,*q;
+static int cConfig_Parse_Line(char *line,  char *key, char *value) {
+    char *p, *q;
     if(*line == '#')
         return 0;
     p = strchr(line, '=');
-    q = strchr(line, '\n');
+    q = strchr(line, '\0');
     if (p == NULL || q == NULL)
         return 0;
-    *q = '\0';
+    q = strchr(line, '\n');
+    if (q)
+        *q = '\0';
     strncpy(key, line, p - line);
     strcpy(value, p+1);
     return 1;
- }
+}
 
 /**
  * @brief: Free the memory for saving options
@@ -106,7 +108,8 @@ int cConfig_Parse_Config(const char *DIR){
             cConfig_Create_New_Node(key, value);
         memset(key, 0, strlen(key));
         memset(value, 0, strlen(key));
-    } while(temp);
+        memset(buf, 0, strlen(key));
+    } while(!feof(fd));
     fclose(fd);
 }
 
