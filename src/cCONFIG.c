@@ -1,6 +1,6 @@
-#include "cConfig.h"
+#include "cCONFIG.h"
 
-static cConfig *config_list = NULL;
+static cCONFIG *config_list = NULL;
 
 /**
  * @brief: Create a new option entity and attach to the list
@@ -11,10 +11,10 @@ static cConfig *config_list = NULL;
  * @returns: -1\Error or The number of current config options
  *
  */
- static int cConfig_Create_New_Node(char *key, char *value) {
+ static int cCONFIG_Create_New_Node(char *key, char *value) {
     int count = 0;
-    cConfig *c = config_list;
-    cConfig *p = (cConfig *)malloc(NODE_LEN);
+    cCONFIG *c = config_list;
+    cCONFIG *p = (cCONFIG *)malloc(NODE_LEN);
     strcpy(p->key, key);
     strcpy(p->value, value);
     p->next = NULL;
@@ -42,7 +42,7 @@ static cConfig *config_list = NULL;
  * @returns: 0\Not valid 1\valid
  *
  */
-static int cConfig_Parse_Line(char *line,  char *key, char *value) {
+static int cCONFIG_Parse_Line(char *line,  char *key, char *value) {
     char *p, *q;
     if(*line == '#')
         return 0;
@@ -59,14 +59,14 @@ static int cConfig_Parse_Line(char *line,  char *key, char *value) {
 }
 
 /**
- * @brief: Free the memory for saving options
+ * @brief: Free the memory of the saved options
  *
  * @returns: 0\Done -1\Error
  *
  */
-void cConfig_Delete_List(void) {
-    cConfig *p = config_list;
-    cConfig *q = p->next;
+void cCONFIG_Delete_List(void) {
+    cCONFIG *p = config_list;
+    cCONFIG *q = p->next;
 
     while ( p == config_list && q != NULL ) {
         while ( NULL != q->next ) {
@@ -88,10 +88,9 @@ void cConfig_Delete_List(void) {
  *
  * @returns: -1\Error or The number of loaded config items
  */
-int cConfig_Parse_Config(const char *DIR){
-    int i;
+int cCONFIG_Parse_Config(const char *DIR){
+    int count = 0;
     FILE *fd;
-    char *temp;
     char buf[ KEY_BUF_LEN + VAL_BUF_LEN ]="";
     char key[KEY_BUF_LEN]="";
     char value[VAL_BUF_LEN]="";
@@ -103,14 +102,15 @@ int cConfig_Parse_Config(const char *DIR){
     }
 
     do {
-        temp = fgets(buf, KEY_BUF_LEN + VAL_BUF_LEN, fd);
-        if (cConfig_Parse_Line(buf, key, value))
-            cConfig_Create_New_Node(key, value);
+        fgets(buf, KEY_BUF_LEN + VAL_BUF_LEN, fd);
+        if (cCONFIG_Parse_Line(buf, key, value))
+            count = cCONFIG_Create_New_Node(key, value);
         memset(key, 0, strlen(key));
         memset(value, 0, strlen(key));
         memset(buf, 0, strlen(key));
     } while(!feof(fd));
     fclose(fd);
+    return count;
 }
 
 /**
@@ -120,8 +120,14 @@ int cConfig_Parse_Config(const char *DIR){
  *
  * @returns: NULL\No correspond value or The pointer of target string
  */
-const char *cConfig_Value_Raw(const char *key){
-
+const char *cCONFIG_Value_Raw(const char *key){
+    cCONFIG *p = config_list;
+    while(p){
+        if ( !strcmp(p->key, key) )
+            return p->value;
+        p = p->next;
+    }
+    return NULL;
 }
 
 /**
@@ -131,6 +137,32 @@ const char *cConfig_Value_Raw(const char *key){
  *
  * @returns: -1\No correspond value or not true/false string \0 False \1 True
  */
-int cConfig_Value_Is_True(const char *key){
+int cCONFIG_Value_Is_True(const char *key){
+    const char *value = NULL;
+    value = cCONFIG_Value_Raw(key);
+    if (!value)
+        return -1;
+    if (!strcmp(value, "true"))
+        return 1;
+    else if (!strcmp(value, "false"))
+        return 0;
+    else
+        return -1;
+}
 
+/**
+ * @brief: Print all the key-value options
+ *
+ */
+void cCONFIG_Dump(void){
+    int count = 0;
+    cCONFIG *p = config_list;
+    printf("--------------------------------------\n");
+    printf("| No. | KEY             | VALUE      |\n");
+    printf("|-----|-----------------|------------|\n");
+    while(p){
+        printf("| %-4d| %-15s | %-10s |\n", ++count, p->key, p->value);
+        p = p->next;
+    }
+    printf("--------------------------------------\n");
 }
