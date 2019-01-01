@@ -19,7 +19,8 @@ typedef struct CONFIG_LIST{
  *
  * @param[in] DIR: Config file
  *
- * @returns: -1\Error or The number of loaded config items
+ * @returns: int\ The number of loaded config options
+ *            -1\ Error
  */
 int cCONFIG_Parse_Config(const char *DIR);
 
@@ -28,31 +29,29 @@ int cCONFIG_Parse_Config(const char *DIR);
  *
  * @param[in] key: Config key
  *
- * @returns: NULL\No correspond value or The pointer of target string
+ * @returns: const char *\ The pointer of the result string
+ *                   NULL\ No correspond value
  */
 const char *cCONFIG_Value_Raw(const char *key);
 
 /**
- * @brief: Check if value is true by key
+ * @brief: Check if value is true
  *
  * @param[in] key: Config key
  *
- * @returns: -1\No correspond value or not true/false string \0 False \1 True
+ * @returns:  0\ False
+ *            1\ True
+ *           -1\ No correspond value or it's not a true/false string
  */
 int cCONFIG_Value_Is_True(const char *key);
 
 /**
- * @brief: Print all the key-value options
- *
+ * @brief: Print all the config options
  */
 void cCONFIG_Dump(void);
 
 /**
- * @brief: Free the memory for saving options
- *
- * @returns: 0\Done -1\Error
- *
+ * @brief: Free the memory where the loaded config options saved
  */
 void cCONFIG_Delete_List(void);
-
 #endif

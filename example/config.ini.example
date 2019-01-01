@@ -1,39 +1,9 @@
-# Hardware Info
-model=rpi_*
-#model=rsp_corev2
-spi_dev=0:0
-led_num=3
+# Number of LEDs
+led_number=12
 
-# Animation
+# LED IC model
+led_model=APA102
+
+# Animations
 on_idle=true
-on_listen=true
-on_speak=true
-to_mute=true
-to_unmute=true
-
-#Colours
-idle_colour=green
-listen_colour=blue
-speak_colour=purple
-mute_colour=yellow
-unmute_colour=green
-
-# Nightmode (24h)
-nightmode=true
-go_sleep=22:15
-go_weak=8:35
-
-[secret]
-# MQTT
-mqtt_host=localhost
-mqtt_port=1883
-#mqtt_username=
-#mqtt_password=
-
-# Device Info
-site_id=default
-
-# Brightness Range 0,255
-led_bri=64
-
-#END OF CONFIG
+on_listen=false

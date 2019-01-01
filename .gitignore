@@ -1,2 +1,4 @@
 .ftpconfig
+.ftpignore
 unit_test/
+cCONFIG_example

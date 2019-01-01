@@ -13,7 +13,7 @@ A config file parser written in C. Super light weight.
 
 @param[in] DIR: Config file
 
-@returns: int\ The number of loaded config items
+@returns: int\ The number of loaded config options
            -1\ Error
 ```
 
@@ -24,8 +24,8 @@ A config file parser written in C. Super light weight.
 
 @param[in] key: Config key
 
-@returns: const char *\ The pointer of target string
-          NULL\ No correspond value
+@returns: const char *\ The pointer of the result string
+                  NULL\ No correspond value
 ```
 
 #### ```int cCONFIG_Value_Is_True(const char *key)```
@@ -37,31 +37,33 @@ A config file parser written in C. Super light weight.
 
 @returns:  0\ False
            1\ True
-          -1\ No correspond value or not true/false string
+          -1\ No correspond value or it's not a true/false string
 ```
 
 #### ```void cCONFIG_Dump(void)```
 
 ```
-@brief: Print all the key-value options
+@brief: Print all the config options
 ```
 
 #### ```void cCONFIG_Delete_List(void)```
 
 ```
-@brief: Free the memory of saved options
-
-@returns:  0\ Done
-          -1\ Error
+@brief: Free the memory where the loaded config options saved
 ```
 
 ## Usage example
 
-The following is an example of the `config.ini` file. We will use `cCONFIG` to parse this file.
+The following is an example of the `config.ini` file. We will use `cCONFIG` library to parse this file.
 
 ```bash
+# Number of LEDs
 led_number=12
+
+# LED IC model
 led_model=APA102
+
+# Animations
 on_idle=true
 on_listen=false
 ```
@@ -79,7 +81,7 @@ on_listen=false
 ```c
 cCONFIG_Parse_Config("config.ini.test");
 ```
-**4.** Call `cCONFIG_Dump()` function to check if all the config option is correctly loaded.
+**4.** Call `cCONFIG_Dump()` function to check if the config options are correctly loaded.
 
 ```c
 cCONFIG_Dump();
@@ -105,6 +107,7 @@ cCONFIG_Delete_List();
 ```
 
 *(All the loaded config info is save in a dynamic link list, without calling this function, your program will cause a memory leakage)*
+
 ## How to Contribute
 
 Contributions are welcome! Not familiar with the codebase yet? No problem!

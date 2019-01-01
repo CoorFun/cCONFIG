@@ -60,9 +60,6 @@ static int cCONFIG_Parse_Line(char *line,  char *key, char *value) {
 
 /**
  * @brief: Free the memory of the saved options
- *
- * @returns: 0\Done -1\Error
- *
  */
 void cCONFIG_Delete_List(void) {
     cCONFIG *p = config_list;
